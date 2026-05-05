@@ -8,7 +8,7 @@ Use this guide to bring up Hermes Agent locally and confirm that the gateway and
 - `kubectl`
 - `curl`
 - `kind`, available at `tools/kind`
-- A Gemini or Google AI Studio API key when you want live model calls
+- A Z.AI GLM Coding Plan API key when you want live model calls
 
 The repository keeps generated runtime state out of Git. Compose data is written to `data/`, and the kind helper binary is expected at `tools/kind`.
 
@@ -33,10 +33,10 @@ For interactive Hermes setup through Docker:
 
 The script creates or reuses the `sandbox-hermes` kind cluster, applies the `sandbox-hermes` namespace, preserves an existing `hermes-secrets` Secret when present, and waits for the `hermes-agent` Pod to become ready.
 
-To configure a Gemini key before or after starting the Pod:
+To configure a GLM Coding Plan key before or after starting the Pod:
 
 ```bash
-GEMINI_API_KEY="..." ./scripts/set-gemini-key.sh
+GLM_API_KEY="..." ./scripts/set-glm-key.sh
 ```
 
 Then verify the Pod:

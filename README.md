@@ -28,7 +28,7 @@ It gives Codex a nearby Hermes worker that can answer bounded subtasks while Cod
 - Creates a `sandbox-hermes` kind cluster and runs the `hermes-agent` Pod in the `sandbox-hermes` namespace.
 - Provides a Docker Compose fallback with the `sandbox-hermes-agent` container.
 - Persists Compose runtime data in `data/`.
-- Defaults to the `gemini` inference provider, `gemma-4-31b-it` model, and the Google AI Studio native endpoint.
+- Defaults to the `zai` inference provider, `glm-5.1` model, and the Z.AI GLM Coding Plan endpoint.
 - Exposes the gateway API at `http://127.0.0.1:8642`.
 - Exposes the dashboard at `http://127.0.0.1:9119`.
 - Includes `scripts/hermes-worker` for Codex-style delegation through `/v1/chat/completions`.
@@ -37,6 +37,25 @@ Browsable docs are published from `docs/` with VitePress:
 
 - Docs site: https://sunwood-ai-labs.github.io/hermes-agent-pod/
 - Japanese docs: https://sunwood-ai-labs.github.io/hermes-agent-pod/ja/
+
+## Kanban Dashboard
+
+Recent Hermes Agent images include the SQLite-backed Kanban board. This repo exposes the dashboard surface, so you can inspect the board from the browser while keeping Codex in charge of host-side changes.
+
+![Hermes Kanban dashboard](docs/public/hermes-kanban-dashboard.png)
+
+For LAN-only viewing from another PC, add these local `.env` entries. Bind only the dashboard to a trusted local interface and keep the gateway API on localhost:
+
+```dotenv
+HERMES_GATEWAY_BIND=127.0.0.1:18642
+HERMES_DASHBOARD_BIND=192.168.11.200:19119
+```
+
+```bash
+docker compose up -d --force-recreate hermes
+```
+
+Then open `http://192.168.11.200:19119` from the other PC. Replace the IP address with this machine's LAN address.
 
 ## 🚀 Quick Start
 
@@ -57,10 +76,10 @@ Start the Kubernetes Pod runtime:
 ./scripts/kind-up.sh
 ```
 
-Set a Gemini or Google AI Studio key in the kind Secret:
+Set a Z.AI GLM Coding Plan key for Compose and, when kind is available, the kind Secret:
 
 ```bash
-GEMINI_API_KEY="..." ./scripts/set-gemini-key.sh
+GLM_API_KEY="..." ./scripts/set-glm-key.sh
 ```
 
 Verify the Pod runtime:
@@ -128,6 +147,7 @@ hermes-agent-pod/
     kind-up.sh
     kind-verify.sh
     kind-down.sh
+    set-glm-key.sh
     set-gemini-key.sh
     hermes-worker
     hermes-worker.py

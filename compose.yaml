@@ -5,18 +5,20 @@ services:
     restart: unless-stopped
     command: gateway run
     ports:
-      - "127.0.0.1:8642:8642"
-      - "127.0.0.1:9119:9119"
+      - "${HERMES_GATEWAY_BIND:-127.0.0.1:8642}:8642"
+      - "${HERMES_DASHBOARD_BIND:-127.0.0.1:9119}:9119"
     volumes:
       - ./data:/opt/data
     environment:
       HERMES_DASHBOARD: "1"
       HERMES_DASHBOARD_TUI: "1"
-      HERMES_INFERENCE_PROVIDER: "gemini"
-      HERMES_INFERENCE_MODEL: "gemma-4-31b-it"
-      GEMINI_BASE_URL: "https://generativelanguage.googleapis.com/v1beta"
-      HERMES_UID: "501"
-      HERMES_GID: "20"
+      HERMES_INFERENCE_PROVIDER: "zai"
+      HERMES_INFERENCE_MODEL: "glm-5.1"
+      GLM_BASE_URL: "https://api.z.ai/api/coding/paas/v4"
+      HERMES_API_TIMEOUT: "1800"
+      HERMES_STREAM_READ_TIMEOUT: "1800"
+      HERMES_UID: "${HERMES_UID:-1000}"
+      HERMES_GID: "${HERMES_GID:-1000}"
       API_SERVER_ENABLED: "true"
       API_SERVER_HOST: "0.0.0.0"
       API_SERVER_KEY: "local-hermes-dev-change-me"

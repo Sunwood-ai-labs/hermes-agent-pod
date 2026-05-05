@@ -18,14 +18,14 @@ Or delete the kind cluster:
 ./scripts/kind-down.sh
 ```
 
-## Missing Gemini Key
+## Missing GLM Key
 
-`scripts/kind-verify.sh` prints whether `GOOGLE_API_KEY` and `GEMINI_API_KEY` are present inside the Pod.
+`scripts/kind-verify.sh` prints whether `GLM_API_KEY`, `ZAI_API_KEY`, or `Z_AI_API_KEY` are present inside the Pod.
 
-Set both Secret keys with:
+Set the GLM Coding Plan key with:
 
 ```bash
-GEMINI_API_KEY="..." ./scripts/set-gemini-key.sh
+GLM_API_KEY="..." ./scripts/set-glm-key.sh
 ```
 
 If the Pod is already running, restart it after updating the Secret:

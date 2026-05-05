@@ -17,6 +17,32 @@ Both the Kubernetes and Compose paths bind the same host ports:
 - `9119` for the dashboard
 
 Run only one runtime at a time. `scripts/kind-up.sh` stops the Compose service when it is running.
+For Compose-only tests, override the host bindings when those ports are already occupied:
+
+```bash
+HERMES_GATEWAY_BIND=127.0.0.1:18642 \
+HERMES_DASHBOARD_BIND=127.0.0.1:19119 \
+./scripts/up.sh
+```
+
+## Kanban Dashboard
+
+Recent Hermes Agent images include a Kanban board in the web dashboard. The board is backed by the Hermes Kanban SQLite database, so CLI, dashboard, and worker-tool changes show up in the same place.
+
+![Hermes Kanban dashboard](/hermes-kanban-dashboard.png)
+
+To view the dashboard from another PC on the same trusted LAN, add these local `.env` entries. Keep the gateway API on localhost and expose only the dashboard:
+
+```dotenv
+HERMES_GATEWAY_BIND=127.0.0.1:18642
+HERMES_DASHBOARD_BIND=192.168.11.200:19119
+```
+
+```bash
+docker compose up -d --force-recreate hermes
+```
+
+Open `http://192.168.11.200:19119` from the other PC, replacing the IP address with this machine's LAN address. Avoid binding the gateway API to a public interface unless you add real authentication and network controls.
 
 ## Delegate to Hermes
 
@@ -59,7 +85,7 @@ The returned session ID is printed to stderr when `--show-session` is provided.
 
 Do not commit real API keys or bot tokens. Use one of these paths instead:
 
-- `GEMINI_API_KEY="..." ./scripts/set-gemini-key.sh` for the kind Secret
+- `GLM_API_KEY="..." ./scripts/set-glm-key.sh` for Compose `data/.env` and the kind Secret when kind is available
 - `data/.env` and `data/config.yaml` for the Compose runtime created by Hermes setup
 - `k8s/hermes-secret.local.yaml` for local Kubernetes overrides
 

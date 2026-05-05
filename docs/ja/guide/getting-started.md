@@ -8,7 +8,7 @@ Hermes Agent をローカルで起動し、gateway と dashboard に到達でき
 - `kubectl`
 - `curl`
 - `tools/kind` に配置された `kind`
-- 実際に model call する場合は Gemini または Google AI Studio API key
+- 実際に model call する場合は Z.AI GLM Coding Plan API key
 
 生成される runtime state は Git に入れません。Compose の data は `data/` に作られ、kind helper binary は `tools/kind` を使います。
 
@@ -33,10 +33,10 @@ Docker 経由で Hermes の対話 setup を行う場合:
 
 この script は `sandbox-hermes` kind cluster を作成または再利用し、`sandbox-hermes` namespace を適用します。既存の `hermes-secrets` Secret があれば保持し、`hermes-agent` Pod が Ready になるまで待ちます。
 
-Gemini key を設定する場合:
+GLM Coding Plan key を設定する場合:
 
 ```bash
-GEMINI_API_KEY="..." ./scripts/set-gemini-key.sh
+GLM_API_KEY="..." ./scripts/set-glm-key.sh
 ```
 
 Pod を確認します:

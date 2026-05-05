@@ -18,14 +18,14 @@ Compose runtime を止めます。
 ./scripts/kind-down.sh
 ```
 
-## Missing Gemini Key
+## Missing GLM Key
 
-`scripts/kind-verify.sh` は Pod 内の `GOOGLE_API_KEY` と `GEMINI_API_KEY` の有無を表示します。
+`scripts/kind-verify.sh` は Pod 内の `GLM_API_KEY`, `ZAI_API_KEY`, `Z_AI_API_KEY` の有無を表示します。
 
-両方の Secret key を設定します。
+GLM Coding Plan key を設定します。
 
 ```bash
-GEMINI_API_KEY="..." ./scripts/set-gemini-key.sh
+GLM_API_KEY="..." ./scripts/set-glm-key.sh
 ```
 
 Pod 起動後に Secret を更新した場合は、Pod を再作成します。

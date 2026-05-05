@@ -43,11 +43,27 @@ metadata:
 data:
   HERMES_DASHBOARD: "1"
   HERMES_DASHBOARD_TUI: "1"
-  HERMES_INFERENCE_PROVIDER: "gemini"
-  HERMES_INFERENCE_MODEL: "gemma-4-31b-it"
-  GEMINI_BASE_URL: "https://generativelanguage.googleapis.com/v1beta"
+  HERMES_INFERENCE_PROVIDER: "zai"
+  HERMES_INFERENCE_MODEL: "glm-5.1"
+  GLM_BASE_URL: "https://api.z.ai/api/coding/paas/v4"
+  HERMES_API_TIMEOUT: "1800"
+  HERMES_STREAM_READ_TIMEOUT: "1800"
   API_SERVER_ENABLED: "true"
   API_SERVER_HOST: "0.0.0.0"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hermes-runtime-config
+  namespace: sandbox-hermes
+data:
+  config.yaml: |
+    model:
+      provider: "zai"
+      default: "glm-5.1"
+      base_url: "https://api.z.ai/api/coding/paas/v4"
+    agent:
+      reasoning_effort: "medium"
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -77,12 +93,15 @@ spec:
       command:
         - /bin/sh
         - -lc
-        - cp /worker-persona/SOUL.md /opt/data/SOUL.md && chown -R 10000:10000 /opt/data
+        - cp /worker-persona/SOUL.md /opt/data/SOUL.md && cp /runtime-config/config.yaml /opt/data/config.yaml && chown -R 10000:10000 /opt/data
       volumeMounts:
         - name: hermes-data
           mountPath: /opt/data
         - name: worker-persona
           mountPath: /worker-persona
+          readOnly: true
+        - name: runtime-config
+          mountPath: /runtime-config
           readOnly: true
   containers:
     - name: hermes
@@ -119,6 +138,9 @@ spec:
     - name: worker-persona
       configMap:
         name: hermes-worker-persona
+    - name: runtime-config
+      configMap:
+        name: hermes-runtime-config
 ---
 apiVersion: v1
 kind: Service

@@ -8,8 +8,8 @@ echo
 kubectl --context kind-sandbox-hermes -n sandbox-hermes exec hermes-agent -- sh -lc '
 printf "provider=%s\n" "$HERMES_INFERENCE_PROVIDER"
 printf "model=%s\n" "$HERMES_INFERENCE_MODEL"
-printf "base=%s\n" "$GEMINI_BASE_URL"
-for k in GOOGLE_API_KEY GEMINI_API_KEY; do
+printf "glm_base=%s\n" "$GLM_BASE_URL"
+for k in GLM_API_KEY ZAI_API_KEY Z_AI_API_KEY; do
   if [ -n "$(printenv "$k")" ]; then
     echo "$k=set"
   else
