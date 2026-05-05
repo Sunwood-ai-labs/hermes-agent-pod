@@ -21,6 +21,7 @@ export default defineConfig({
       themeConfig: {
         nav: [
           { text: 'Guide', link: '/guide/getting-started' },
+          { text: 'Release Notes', link: '/guide/releases/v0.1.0' },
           { text: 'GitHub', link: repo }
         ],
         sidebar: [
@@ -31,6 +32,13 @@ export default defineConfig({
               { text: 'Usage', link: '/guide/usage' },
               { text: 'Architecture', link: '/guide/architecture' },
               { text: 'Troubleshooting', link: '/guide/troubleshooting' }
+            ]
+          },
+          {
+            text: 'Releases',
+            items: [
+              { text: 'v0.1.0 Release Notes', link: '/guide/releases/v0.1.0' },
+              { text: 'v0.1.0 Walkthrough', link: '/guide/articles/v0-1-0-local-hermes-runtime' }
             ]
           }
         ]
@@ -44,6 +52,7 @@ export default defineConfig({
       themeConfig: {
         nav: [
           { text: 'ガイド', link: '/ja/guide/getting-started' },
+          { text: 'リリースノート', link: '/ja/guide/releases/v0.1.0' },
           { text: 'GitHub', link: repo }
         ],
         sidebar: [
@@ -54,6 +63,13 @@ export default defineConfig({
               { text: '使い方', link: '/ja/guide/usage' },
               { text: '構成', link: '/ja/guide/architecture' },
               { text: 'トラブルシュート', link: '/ja/guide/troubleshooting' }
+            ]
+          },
+          {
+            text: 'リリース',
+            items: [
+              { text: 'v0.1.0 リリースノート', link: '/ja/guide/releases/v0.1.0' },
+              { text: 'v0.1.0 ウォークスルー', link: '/ja/guide/articles/v0-1-0-local-hermes-runtime' }
             ]
           }
         ]

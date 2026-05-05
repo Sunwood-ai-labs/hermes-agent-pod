@@ -44,3 +44,7 @@ Codex が主担当のまま、Hermes に小さく区切った worker task を lo
 ## 次に読むもの
 
 まず [はじめに](/ja/guide/getting-started) で起動し、[使い方](/ja/guide/usage) で worker 委譲パターンを確認します。
+
+## リリースノート
+
+初回公開版の内容は [v0.1.0 リリースノート](/ja/guide/releases/v0.1.0) にまとめています。全体の流れを追う場合は [v0.1.0 ウォークスルー](/ja/guide/articles/v0-1-0-local-hermes-runtime) を読んでください。

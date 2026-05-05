@@ -44,3 +44,7 @@ It is meant for development and delegation experiments where Codex remains the l
 ## Next Steps
 
 Start with [Getting Started](/guide/getting-started), then review [Usage](/guide/usage) for worker delegation patterns.
+
+## Release Notes
+
+Read the [v0.1.0 release notes](/guide/releases/v0.1.0) for the first public release, or follow the [v0.1.0 walkthrough](/guide/articles/v0-1-0-local-hermes-runtime) to see how the shipped pieces fit together.

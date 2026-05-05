@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" role="img" aria-labelledby="title desc">
+  <title id="title">Hermes Agent Pod v0.1.0 release header</title>
+  <desc id="desc">Release header for the first Hermes Agent Pod release, showing the local gateway, dashboard, and Codex worker wrapper.</desc>
+  <rect width="1200" height="420" rx="40" fill="#101828"/>
+  <path d="M0 310 C160 250 260 355 410 300 C560 245 670 285 800 240 C940 190 1040 210 1200 150 L1200 420 L0 420 Z" fill="#155e75" opacity=".45"/>
+  <path d="M820 78 H1090 A26 26 0 0 1 1116 104 V284 A26 26 0 0 1 1090 310 H820 A26 26 0 0 1 794 284 V104 A26 26 0 0 1 820 78 Z" fill="#f8fafc" opacity=".95"/>
+  <path d="M850 130 H1060" stroke="#155e75" stroke-width="14" stroke-linecap="round"/>
+  <path d="M850 178 H1020" stroke="#2dd4bf" stroke-width="14" stroke-linecap="round"/>
+  <path d="M850 226 H1080" stroke="#fbbf24" stroke-width="14" stroke-linecap="round"/>
+  <rect x="84" y="76" width="216" height="216" rx="42" fill="#0f172a" stroke="#2dd4bf" stroke-width="8"/>
+  <path d="M192 105 258 143 V219 L192 258 L126 219 V143 Z" fill="#2dd4bf"/>
+  <path d="M192 130 234 154 V207 L192 232 L150 207 V154 Z" fill="#f8fafc"/>
+  <path d="M149 151 H235 A20 20 0 0 1 255 171 V218 A20 20 0 0 1 235 238 H149 A20 20 0 0 1 129 218 V171 A20 20 0 0 1 149 151 Z" fill="#1f2937"/>
+  <path d="M161 185 L178 198 L161 211" fill="none" stroke="#5eead4" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M194 213 H230" fill="none" stroke="#fbbf24" stroke-width="10" stroke-linecap="round"/>
+  <text x="340" y="145" font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="54" font-weight="800" fill="#f8fafc">Hermes Agent Pod</text>
+  <text x="340" y="202" font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="30" font-weight="700" fill="#5eead4">v0.1.0 initial public release</text>
+  <text x="340" y="254" font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="24" fill="#cbd5e1">Local Hermes gateway, dashboard, and Codex worker wrapper</text>
+  <text x="340" y="302" font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="20" fill="#fbbf24">kind Pod + Docker Compose + Z.AI GLM defaults</text>
+</svg>
