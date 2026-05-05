@@ -1,6 +1,10 @@
 # Local runtime state and generated data
 data/
 tools/kind
+node_modules/
+docs/node_modules/
+docs/.vitepress/cache/
+docs/.vitepress/dist/
 
 # Local-only secrets and environment overrides
 .env
@@ -13,6 +17,12 @@ k8s/hermes-secret.local.yaml
 # Python generated files
 __pycache__/
 *.py[cod]
+
+# Logs and transient build output
+*.log
+coverage/
+dist/
+build/
 
 # OS/editor noise
 .DS_Store

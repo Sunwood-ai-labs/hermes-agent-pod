@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">Hermes Agent Pod icon</title>
+  <desc id="desc">A flat geometric Kubernetes pod and agent terminal mark.</desc>
+  <rect width="256" height="256" rx="48" fill="#101828"/>
+  <path d="M128 32 207 78v100l-79 46-79-46V78z" fill="#2dd4bf"/>
+  <path d="M128 52 190 88v78l-62 36-62-36V88z" fill="#f8fafc"/>
+  <path d="M128 72 172 98v56l-44 26-44-26V98z" fill="#155e75"/>
+  <circle cx="128" cy="126" r="30" fill="#f8fafc"/>
+  <path d="M95 96h66a16 16 0 0 1 16 16v39a16 16 0 0 1-16 16H95a16 16 0 0 1-16-16v-39a16 16 0 0 1 16-16z" fill="#1f2937"/>
+  <path d="m105 123 14 11-14 11" fill="none" stroke="#5eead4" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M132 146h29" fill="none" stroke="#fbbf24" stroke-width="9" stroke-linecap="round"/>
+  <circle cx="83" cy="83" r="9" fill="#fbbf24"/>
+  <circle cx="173" cy="83" r="9" fill="#fbbf24"/>
+  <circle cx="83" cy="173" r="9" fill="#fbbf24"/>
+  <circle cx="173" cy="173" r="9" fill="#fbbf24"/>
+</svg>

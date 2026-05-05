@@ -1,25 +1,129 @@
-# Hermes Agent Pod
+<p align="center">
+  <img src="docs/public/hermes-agent-pod-icon.svg" width="108" alt="Hermes Agent Pod icon">
+</p>
 
-Nous Research の Hermes Agent を、この sandbox 内の Kubernetes Pod または Docker container で実行するための検証フォルダです。
+<h1 align="center">Hermes Agent Pod</h1>
 
-## What This Builds
+<p align="center">
+  Run Nous Research Hermes Agent locally as a Kubernetes Pod or Docker Compose service, then delegate bounded Codex worker tasks through a localhost OpenAI-compatible gateway.
+</p>
 
-- `sandbox-hermes` という kind cluster を作り、`sandbox-hermes` namespace の `hermes-agent` Pod で Hermes gateway を起動します。
-- Docker Compose fallback として `sandbox-hermes-agent` container でも起動できます。
-- Compose 版の永続データは `data/` に置きます。
-- 既定の inference provider は `gemini`、既定モデルは `gemma-4-31b-it`、base URL は Google AI Studio native endpoint です。
-- Gateway/API は `http://127.0.0.1:8642` に公開します。
-- Dashboard は `http://127.0.0.1:9119` に公開します。
+<p align="center">
+  <a href="./README.md">English</a> | <a href="./README.ja.md">日本語</a>
+</p>
 
-## Files
+<p align="center">
+  <a href="https://github.com/Sunwood-ai-labs/hermes-agent-pod/actions/workflows/deploy-docs.yml"><img alt="Deploy Docs" src="https://github.com/Sunwood-ai-labs/hermes-agent-pod/actions/workflows/deploy-docs.yml/badge.svg"></a>
+  <a href="./LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg"></a>
+  <img alt="Docker" src="https://img.shields.io/badge/Docker-Compose-2496ED">
+  <img alt="Kubernetes" src="https://img.shields.io/badge/Kubernetes-kind-326CE5">
+  <img alt="Docs" src="https://img.shields.io/badge/docs-VitePress-42b883">
+</p>
+
+## ✨ What This Builds
+
+Hermes Agent Pod is a public-facing local runtime kit for `nousresearch/hermes-agent:latest`.
+It gives Codex a nearby Hermes worker that can answer bounded subtasks while Codex keeps control of host-side files and final decisions.
+
+- Creates a `sandbox-hermes` kind cluster and runs the `hermes-agent` Pod in the `sandbox-hermes` namespace.
+- Provides a Docker Compose fallback with the `sandbox-hermes-agent` container.
+- Persists Compose runtime data in `data/`.
+- Defaults to the `gemini` inference provider, `gemma-4-31b-it` model, and the Google AI Studio native endpoint.
+- Exposes the gateway API at `http://127.0.0.1:8642`.
+- Exposes the dashboard at `http://127.0.0.1:9119`.
+- Includes `scripts/hermes-worker` for Codex-style delegation through `/v1/chat/completions`.
+
+Browsable docs are published from `docs/` with VitePress:
+
+- Docs site: https://sunwood-ai-labs.github.io/hermes-agent-pod/
+- Japanese docs: https://sunwood-ai-labs.github.io/hermes-agent-pod/ja/
+
+## 🚀 Quick Start
+
+```bash
+git clone https://github.com/Sunwood-ai-labs/hermes-agent-pod.git
+cd hermes-agent-pod
+```
+
+Run the interactive Hermes setup when you want Hermes to create local Compose config under `data/`:
+
+```bash
+./scripts/setup.sh
+```
+
+Start the Kubernetes Pod runtime:
+
+```bash
+./scripts/kind-up.sh
+```
+
+Set a Gemini or Google AI Studio key in the kind Secret:
+
+```bash
+GEMINI_API_KEY="..." ./scripts/set-gemini-key.sh
+```
+
+Verify the Pod runtime:
+
+```bash
+./scripts/kind-verify.sh
+```
+
+Use the Docker Compose fallback instead:
+
+```bash
+./scripts/up.sh
+./scripts/verify.sh
+./scripts/down.sh
+```
+
+Pod and Compose runtimes both use host ports `8642` and `9119`; run only one runtime at a time. `scripts/kind-up.sh` stops the Compose service if it is already running.
+
+## 🧭 Codex Worker Usage
+
+Send a bounded task to the local Hermes gateway:
+
+```bash
+./scripts/hermes-worker "Summarize the current Hermes Pod status."
+```
+
+Attach host text files as explicit context:
+
+```bash
+./scripts/hermes-worker \
+  --file README.md \
+  --file k8s/hermes-pod.yaml \
+  "Review the runtime instructions for missing operational caveats."
+```
+
+The wrapper uses `http://127.0.0.1:8642/v1/chat/completions` by default. Hermes can use tools available inside the Pod or container, but it cannot directly edit host files unless Codex provides a deliberate bridge.
+
+Useful wrapper settings:
+
+| Variable | Default |
+| --- | --- |
+| `HERMES_API_BASE_URL` | `http://127.0.0.1:8642/v1` |
+| `HERMES_API_KEY` | `local-hermes-dev-change-me` |
+| `HERMES_API_MODEL` | `hermes-agent` |
+| `HERMES_WORKER_TIMEOUT` | `180` |
+
+## 🧱 Repository Layout
 
 ```text
 hermes-agent-pod/
+  .github/workflows/deploy-docs.yml
   compose.yaml
+  docs/
+    .vitepress/config.ts
+    guide/
+    ja/
+    public/hermes-agent-pod-icon.svg
   kind-config.yaml
   k8s/
     hermes-pod.yaml
     hermes-secret.example.yaml
+  prompts/
+    hermes-worker-system.md
   scripts/
     kind-up.sh
     kind-verify.sh
@@ -35,92 +139,68 @@ hermes-agent-pod/
   tools/
 ```
 
-## Quick Commands
+## ⚙️ Runtime Configuration
+
+Compose mode stores Hermes configuration and generated state under `data/`:
+
+- `data/.env`: API keys, bot tokens, and API server settings
+- `data/config.yaml`: model, tools, and terminal backend settings
+- `data/SOUL.md`: Hermes persona and behavior
+- `data/memories/`, `data/skills/`, `data/sessions/`: runtime-grown data
+
+Kubernetes mode uses:
+
+- `k8s/hermes-pod.yaml` for ConfigMaps, PVC, Pod, and Service
+- `k8s/hermes-secret.example.yaml` as a placeholder Secret template
+- `k8s/hermes-secret.local.yaml` for local-only Secret overrides
+- `prompts/hermes-worker-system.md` for the worker persona copied into `/opt/data/SOUL.md`
+
+This repository exposes the dashboard and API server on localhost only. Add a reverse proxy and authentication before any external exposure.
+
+## 🔐 Secret Hygiene
+
+Real API keys, bot tokens, and runtime data do not belong in Git.
+
+- `data/`, `.env*`, `*.local`, and `k8s/hermes-secret.local.yaml` are ignored.
+- `k8s/hermes-secret.example.yaml` contains only placeholders.
+- `compose.yaml` and the example Secret use `local-hermes-dev-change-me` only for local development.
+- Replace all placeholder keys before using a shared environment.
+
+## 📚 Documentation
+
+Work on the docs from the `docs/` directory:
 
 ```bash
-cd hermes-agent-pod
+cd docs
+npm install
+npm run docs:dev
+npm run docs:build
+```
 
-# API key や連携先を対話セットアップする場合
-./scripts/setup.sh
+The GitHub Pages workflow builds `docs/.vitepress/dist` and publishes it through Actions. The VitePress base path is `/hermes-agent-pod/`.
 
-# Kubernetes Pod として gateway + dashboard を起動
+## 🧪 Verification Commands
+
+```bash
+# Kubernetes runtime
 ./scripts/kind-up.sh
-
-# Gemini / Google AI Studio key を Secret に入れる場合
-GEMINI_API_KEY="..." ./scripts/set-gemini-key.sh
-
-# Pod 起動確認
 ./scripts/kind-verify.sh
 
-# kind cluster ごと停止・削除
-./scripts/kind-down.sh
-
-# Docker Compose fallback で gateway + dashboard を起動
+# Docker Compose runtime
 ./scripts/up.sh
-
-# Compose 版の起動確認
 ./scripts/verify.sh
 
-# Compose 版の停止
-./scripts/down.sh
+# Docs
+cd docs
+npm run docs:build
 ```
 
-Pod 版と Compose 版はどちらも host の `8642/9119` を使うため、同時には起動しないでください。`scripts/kind-up.sh` は必要に応じて Compose 版を止めます。
+## 📄 License
 
-## Configuration
+This project is released under the [MIT License](./LICENSE).
 
-Docker Compose 版の Hermes 設定や secret は `data/` に作られます。主なファイルは次の通りです。
+## 🔗 References
 
-- `data/.env`: API keys, bot tokens, API server settings
-- `data/config.yaml`: model, tools, terminal backend settings
-- `data/SOUL.md`: Hermes の人格・ふるまい
-- `data/memories/`, `data/skills/`, `data/sessions/`: 実行中に育つデータ
-
-`data/` と `tools/kind` は、この concept folder の `.gitignore` で除外しています。
-
-この検証では dashboard と API server を localhost にだけ公開しています。外部公開する場合は reverse proxy と認証を別途足してください。
-
-## Kubernetes Pod
-
-`scripts/kind-up.sh` は sandbox 専用の kind cluster を作って、Pod/Service を適用します。cluster 内には PVC が作られるため、`scripts/kind-down.sh` で cluster を削除すると Pod 側の状態も消えます。
-
-```bash
-cd hermes-agent-pod
-./scripts/kind-up.sh
-```
-
-`k8s/hermes-secret.example.yaml` は Secret テンプレートです。実運用では API key や bot token を入れた Secret を作ってから使います。
-
-`scripts/kind-up.sh` は既存 Secret を保持するため、再実行しても key を空の example で上書きしません。
-
-## Codex Worker Usage
-
-Codex から部下エージェントとして使う時は、次の wrapper を使います。
-
-```bash
-cd hermes-agent-pod
-
-./scripts/hermes-worker "このPodの状態を短く確認して"
-
-./scripts/hermes-worker \
-  --file README.md \
-  "READMEの運用手順に抜けがないかレビューして"
-```
-
-この wrapper は `http://127.0.0.1:8642/v1/chat/completions` を使い、OpenAI-compatible API 経由で Hermes に依頼します。Hermes は Pod 内では tools を使えますが、host のファイルを直接編集できるわけではありません。host file を見せたい時は `--file` で添付してください。
-
-`prompts/hermes-worker-system.md` が部下エージェント用の system prompt です。Pod 起動時には同じ内容が `/opt/data/SOUL.md` に反映されます。
-
-## Public Repo Notes
-
-実 API keys, bot tokens, local runtime data は repository に入れません。
-
-- `data/`, `.env*`, `*.local`, `k8s/hermes-secret.local.yaml` は `.gitignore` で除外しています。
-- `k8s/hermes-secret.example.yaml` は空値または placeholder だけを置く example です。
-- `compose.yaml` と example secret の `local-hermes-dev-change-me` は localhost 検証用 placeholder です。外部公開や共有環境では必ず別の値に置き換えてください。
-
-## References
-
-- Docker image: `nousresearch/hermes-agent:latest`
-- Official docs: https://hermes-agent.nousresearch.com/docs
-- Docker guide: https://hermes-agent.nousresearch.com/docs/user-guide/docker
+- Hermes Agent docs: https://hermes-agent.nousresearch.com/docs
+- Hermes Agent Docker guide: https://hermes-agent.nousresearch.com/docs/user-guide/docker
+- VitePress docs: https://vitepress.dev/
