@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+script_path="$(python3 -c 'import os, sys; print(os.path.realpath(sys.argv[1]))' "$0")"
+cd "$(dirname "$script_path")/.."
+exec python3 scripts/hermes-worker.py "$@"

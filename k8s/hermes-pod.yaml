@@ -1,0 +1,140 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: sandbox-hermes
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hermes-worker-persona
+  namespace: sandbox-hermes
+data:
+  SOUL.md: |
+    # Hermes Worker Persona
+
+    You are Hermes, a worker agent delegated by Codex.
+
+    Codex is the lead agent. Your job is to help Codex move faster by taking bounded subtasks, checking assumptions, reviewing context, drafting commands, and returning concise evidence-backed results.
+
+    Working rules:
+
+    - Treat every request as delegated work from Codex unless the user explicitly says otherwise.
+    - Stay focused on the assigned task. Do not expand scope.
+    - Be direct about uncertainty, missing context, and runtime limits.
+    - You may use tools available inside your Hermes pod, but do not claim you changed files on the host machine unless Codex explicitly provided a mechanism and you verified it.
+    - If context files are included in the prompt, ground your answer in those files and cite their paths.
+    - Prefer short Japanese responses when Codex delegates in Japanese.
+    - Return high-signal output that Codex can immediately use.
+
+    Default answer shape:
+
+    1. Result
+    2. Evidence
+    3. Risk or Blocker
+    4. Recommended Next Action
+
+    If the task is a tiny check, one short paragraph is enough.
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hermes-config
+  namespace: sandbox-hermes
+data:
+  HERMES_DASHBOARD: "1"
+  HERMES_DASHBOARD_TUI: "1"
+  HERMES_INFERENCE_PROVIDER: "gemini"
+  HERMES_INFERENCE_MODEL: "gemma-4-31b-it"
+  GEMINI_BASE_URL: "https://generativelanguage.googleapis.com/v1beta"
+  API_SERVER_ENABLED: "true"
+  API_SERVER_HOST: "0.0.0.0"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: hermes-data
+  namespace: sandbox-hermes
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hermes-agent
+  namespace: sandbox-hermes
+  labels:
+    app: hermes-agent
+spec:
+  restartPolicy: Always
+  initContainers:
+    - name: install-worker-persona
+      image: nousresearch/hermes-agent:latest
+      imagePullPolicy: IfNotPresent
+      command:
+        - /bin/sh
+        - -lc
+        - cp /worker-persona/SOUL.md /opt/data/SOUL.md && chown -R 10000:10000 /opt/data
+      volumeMounts:
+        - name: hermes-data
+          mountPath: /opt/data
+        - name: worker-persona
+          mountPath: /worker-persona
+          readOnly: true
+  containers:
+    - name: hermes
+      image: nousresearch/hermes-agent:latest
+      imagePullPolicy: IfNotPresent
+      args:
+        - gateway
+        - run
+      ports:
+        - name: gateway
+          containerPort: 8642
+        - name: dashboard
+          containerPort: 9119
+      envFrom:
+        - configMapRef:
+            name: hermes-config
+        - secretRef:
+            name: hermes-secrets
+            optional: true
+      volumeMounts:
+        - name: hermes-data
+          mountPath: /opt/data
+      resources:
+        requests:
+          cpu: "1"
+          memory: 1Gi
+        limits:
+          cpu: "2"
+          memory: 4Gi
+  volumes:
+    - name: hermes-data
+      persistentVolumeClaim:
+        claimName: hermes-data
+    - name: worker-persona
+      configMap:
+        name: hermes-worker-persona
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hermes-agent
+  namespace: sandbox-hermes
+spec:
+  type: NodePort
+  selector:
+    app: hermes-agent
+  ports:
+    - name: gateway
+      port: 8642
+      targetPort: gateway
+      nodePort: 30642
+    - name: dashboard
+      port: 9119
+      targetPort: dashboard
+      nodePort: 30119

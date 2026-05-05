@@ -1,0 +1,18 @@
+# Local runtime state and generated data
+data/
+tools/kind
+
+# Local-only secrets and environment overrides
+.env
+.env.*
+!.env.example
+*.local
+*.local.*
+k8s/hermes-secret.local.yaml
+
+# Python generated files
+__pycache__/
+*.py[cod]
+
+# OS/editor noise
+.DS_Store
